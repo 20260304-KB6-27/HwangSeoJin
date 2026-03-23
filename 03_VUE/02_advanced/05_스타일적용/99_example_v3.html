@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vue 게시판 목록</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  </head>
+  <body>
+    <div id="app" class="container">
+      <h1 id="title">📌 게시판 목록 v3</h1>
+      <div class="d-flex input-group">
+        <span class="me-3">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="새 게시글 제목"
+            v-model="title"
+          />
+        </span>
+        <span class="me-3">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="새 게시글 내용"
+            v-model="content"
+          />
+        </span>
+        <button @click="createContent">작성</button>
+      </div>
+      <ul>
+        <li
+          class="post-item"
+          v-for="(post, index) in newPosts"
+          :key="post.no"
+          @click="toggleContent(index)"
+        >
+          <h2>
+            <div>{{newPosts.length - index }}. {{post.title}}</div>
+            <div id="toggle">{{post.selected ? "▲" : "▼" }}</div>
+          </h2>
+          <div v-if="post.selected" class="post-content">
+            <div v-if="editId == post.no">
+              <div id="editing">
+                <div>
+                  <input
+                    id="editing-title"
+                    type="text"
+                    v-model="editedTitle"
+                    class="form-control mb-2"
+                    @click.stop
+                  />
+                </div>
+                <div>
+                  <textarea
+                    id="editing-content"
+                    v-model="editedContent"
+                    class="form-control mb-2"
+                    @click.stop
+                  ></textarea>
+                </div>
+              </div>
+              <button @click.stop="saveEdit(post)">저장</button>
+              <button @click.stop="cancelEdit">취소</button>
+            </div>
+
+            <div v-else>
+              <h1>{{ post.title }}</h1>
+              <div class="mb-3">{{ post.content }}</div>
+              <button @click.stop="closeContent(index)">닫기</button>
+              <button @click.stop="editContent(post)">수정</button>
+              <button @click.stop="deleteContent(post.no)">삭제</button>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <script>
+      const { createApp, ref, computed } = Vue;
+
+      createApp({
+        setup() {
+          const title = ref('');
+          const content = ref('');
+
+          const editedTitle = ref('');
+          const editedContent = ref('');
+          const editId = ref(null);
+
+          const posts = ref([
+            {
+              no: 1,
+              title: 'Vue.js 기초 배우기',
+              content:
+                'Vue.js는 사용자 인터페이스를 구축하기 위한 프로그레시브 프레임워크입니다.',
+              completed: false,
+              selected: false,
+            },
+            {
+              no: 2,
+              title: '자바스크립트 ES6 문법',
+              content:
+                'ES6는 JavaScript의 최신 문법을 포함하며, let/const, 화살표 함수, 구조 분해 할당 등을 제공합니다.',
+              completed: false,
+              selected: false,
+            },
+            {
+              no: 3,
+              title: 'Node.js와 Express',
+              content:
+                'Node.js는 서버 측에서 JavaScript를 실행할 수 있도록 하는 런타임이며, Express는 이를 위한 경량 웹 프레임워크입니다.',
+              completed: false,
+              selected: false,
+            },
+            {
+              no: 4,
+              title: 'MongoDB 기본 개념',
+              content:
+                'MongoDB는 NoSQL 데이터베이스로 JSON과 유사한 문서 기반 데이터를 저장하고 관리할 수 있습니다.',
+              completed: false,
+              selected: false,
+            },
+            {
+              no: 5,
+              title: '프론트엔드와 백엔드의 차이',
+              content:
+                '프론트엔드는 사용자가 보는 부분을 개발하는 것이고, 백엔드는 서버와 데이터베이스를 관리하는 부분입니다.',
+              completed: false,
+              selected: false,
+            },
+            {
+              no: 6,
+              title: '비동기 프로그래밍',
+              content:
+                'JavaScript의 비동기 처리 방식에는 콜백, 프로미스, async/await가 있습니다.',
+              completed: false,
+              selected: false,
+            },
+            {
+              no: 7,
+              title: 'Vue Router 사용법',
+              content:
+                'Vue Router를 사용하면 Vue.js 애플리케이션에서 페이지 이동을 쉽게 처리할 수 있습니다.',
+              completed: false,
+              selected: false,
+            },
+            {
+              no: 8,
+              title: '컴포넌트 기반 개발',
+              content:
+                'Vue.js에서는 컴포넌트를 사용하여 UI를 작은 단위로 쪼개서 관리할 수 있습니다.',
+              completed: false,
+              selected: false,
+            },
+            {
+              no: 9,
+              title: 'CSS와 SCSS 차이점',
+              content:
+                'SCSS는 CSS의 확장된 버전으로 변수, 중첩, 믹스인 등을 지원합니다.',
+              completed: false,
+              selected: false,
+            },
+            {
+              no: 10,
+              title: 'Git과 GitHub 사용법',
+              content:
+                'Git은 버전 관리 시스템이며, GitHub는 이를 활용한 원격 저장소 플랫폼입니다.',
+              completed: false,
+              selected: false,
+            },
+          ]);
+
+          const newPosts = computed(() => {
+            return [...posts.value].sort((a, b) => b.no - a.no);
+          });
+
+          const toggleContent = (index) => {
+            newPosts.value[index].selected = !newPosts.value[index].selected;
+          };
+
+          const closeContent = (index) => {
+            newPosts.value[index].selected = false;
+          };
+
+          const createContent = () => {
+            if (title.value < 1 || content.value < 1) return;
+
+            posts.value.push({
+              no: new Date().getTime(),
+              title: title.value,
+              content: content.value,
+              completed: false,
+              selected: false,
+            });
+
+            title.value = '';
+            content.value = '';
+          };
+
+          const deleteContent = (id) => {
+            console.log(`id: `, id);
+            let index = posts.value.findIndex((item) => id == item.no);
+            console.log(`index: `, index);
+
+            alert('정말로 삭제하시겠습니까?');
+            posts.value.splice(index, 1);
+          };
+
+          const editContent = (post) => {
+            editId.value = post.no;
+            editedTitle.value = post.title;
+            editedContent.value = post.content;
+          };
+
+          const saveEdit = (post) => {
+            post.title = editedTitle.value;
+            post.content = editedContent.value;
+
+            editId.value = null;
+          }
+
+          return {
+            title,
+            newPosts,
+            content,
+            toggleContent,
+            closeContent,
+            createContent,
+            deleteContent,
+            editedTitle,
+            editedContent,
+            editId,
+            editContent,
+            saveEdit
+          };
+        },
+      }).mount('#app');
+    </script>
+
+    <style>
+      #editing {
+        margin: 20px;
+      }
+      #editing-content,
+      #editing-title {
+        width: 100%;
+      }
+
+      .input-group {
+        justify-content: center;
+      }
+
+      #toggle {
+        color: #929292;
+      }
+      h2 {
+        display: flex;
+        justify-content: space-between;
+      }
+      #title {
+        text-align: center;
+        color: #333;
+      }
+      ul {
+        list-style-type: none;
+        padding: 0;
+      }
+      .post-item {
+        cursor: pointer;
+        padding: 15px;
+        /* display: flex; */
+        justify-content: space-between;
+        align-items: center;
+        font-weight: bold;
+      }
+      .post-item:hover {
+        background: #f4f4f4;
+      }
+      .post-content {
+        margin-top: 20px;
+        padding: 30px 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #fff;
+      }
+      button {
+        margin-top: 10px;
+        padding: 5px 10px;
+        border: none;
+        background: #ff6b6b;
+        color: white;
+        cursor: pointer;
+        border-radius: 3px;
+      }
+      button:hover {
+        background: #ff4f4f;
+      }
+      .arrow {
+        font-size: 0.8em;
+        color: #888;
+      }
+    </style>
+  </body>
+</html>

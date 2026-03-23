@@ -1,139 +1,166 @@
 <!doctype html>
-<html lang="en">
+<html lang="ko">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-
-    <!-- font-awesome 라이브러리 가져오기 -->
+    <title>Vue 3 연습용 Composition</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     />
-
-    <!-- Bootstrap CSS 디자인, 레이아웃 -->
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
     />
-
-    <!-- Bootstrap JS 모달, 드롭다운 -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-
     <style>
-      section,
-      header {
-        padding: 60px 20px;
-      }
-
-      .title {
-        text-align: center;
-        margin-bottom: 20px;
-      }
-
-      .desc {
-        text-align: center;
-        margin-bottom: 40px;
-      }
-
-      .box {
-        padding: 20px;
-        text-align: center;
+      #jumbotron {
         color: white;
+        background-image: url('https://p4.wallpaperbetter.com/wallpaper/922/872/963/winter-forest-snow-mountains-wallpaper-preview.jpg');
+        height: 200px;
+        padding: 30px;
+      }
+
+      nav {
+        padding: 10px;
       }
     </style>
   </head>
   <body>
-    <!-- 네비게이션 바 -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div id="app">
       <div class="container">
-        <span class="navbar-toggler-icon"></span>
-        <a class="navbar-brand">Fullstack</a>
-
-        <button
-          class="navbar-toggler"
-          data-bs-toggle="collapse"
-          data-bs-target="#menu"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <!-- 접히는 목록 -->
-        <div class="collapse navbar-collapse" id="menu">
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <a class="nav-link" href="#">그리드</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">컴포넌트</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">유틸리티</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">fontawesome</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-
-
-
-      <!-- 페이징 -->
-      <div class="col-md-6">
-        <h3>페이징</h3>
-        <table class="table table-hover">
-          <thead>
-            <th style="width: 50px">No</th>
-            <th>제 목</th>
-            <th style="width: 150px">작 성 자</th>
-            <th style="width: 150px">등 록 일</th>
-          </thead>
-          <tbody>
-            <tr>
-              <td>1</td>
-              <td><a href="#"> 글 제 목 1</a></td>
-              <td>user01</td>
-              <td>2024-04-17</td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="d-flex my-5">
-          <div class="flex-grow-1">
-            <ul class="pagination justify-content-center">
-              <li class="page-item">
-                <a class="page-link" href="#"
-                  ><i class="fa-solid fa-backward-step"></i
-                ></a>
-              </li>
-              <li class="page-item">
-                <a class="page-link" href="#"
-                  ><i class="fa-solid fa-chevron-left"></i
-                ></a>
-              </li>
-              <li class="page-item"><a class="page-link" href="#">6</a></li>
-              <li class="page-item"><a class="page-link" href="#">7</a></li>
-              <li class="page-item"><a class="page-link" href="#">8</a></li>
-              <li class="page-item active">
-                <a class="page-link" href="#">9</a>
-              </li>
-              <li class="page-item"><a class="page-link" href="#">10</a></li>
-              <li class="page-item">
-                <a class="page-link" href="#"
-                  ><i class="fa-solid fa-chevron-right"></i
-                ></a>
-              </li>
-              <li class="page-item">
-                <a class="page-link" href="#"
-                  ><i class="fa-solid fa-forward-step"></i
-                ></a>
-              </li>
-            </ul>
+        <section id="jumbotron">
+          <h1>Fullstack Study</h1>
+          <h3>Vue + 자바 기반의 풀스택 기술을 배웁니다.</h3>
+        </section>
+        <!-- 네비게이션 바 -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-5">
+          <div class="container">
+            <a class="navbar-brand" href="#">Fullstack</a>
+            <button
+              class="navbar-toggler"
+              data-bs-toggle="collapse"
+              data-bs-target="#menu"
+            >
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <!-- 접히는 목록 -->
+            <div class="collapse navbar-collapse" id="menu">
+              <ul class="navbar-nav">
+                <li class="nav-item">
+                  <a class="nav-link" href="#">그리드</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#">컴포넌트</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#">유틸리티</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#">fontAwesome</a>
+                </li>
+              </ul>
+            </div>
+            <div class="d-none d-lg-flex">
+              <div class="text-white">
+                <i class="fa-regular fa-user text-white"></i> admin
+              </div>
+              <div class="text-white ms-5">
+                <i
+                  class="fa-solid fa-arrow-right-from-bracket"
+                  style="color: rgb(116, 192, 252)"
+                ></i
+                >로그아웃
+              </div>
+            </div>
           </div>
-        </div>
+        </nav>
+        <h2>
+          <i class="fa-solid fa-list" style="color: rgb(0,0,0)"></i>
+          글 목록
+        </h2>
+        <table class="table">
+          <tr>
+            <th scope="col">No</th>
+            <th scope="col">제목</th>
+            <th scope="col">작성자</th>
+            <th scope="col">등록일</th>
+          </tr>
+          <tr v-for="(article, index) in articles" :key="index">
+            <th>{{ index + 1}}</th>
+            <td><a href="#">{{article.title}}</a></td>
+            <td>{{article.author}}</td>
+            <td>{{article.date}}</td>
+          </tr>
+        </table>
+        <section id="d-flex">
+          <div class="d-flex my-5">
+            <div class="flex-grow-1">
+              <ul class="pagination justify-content-center">
+                <li class="page-item">
+                  <a class="page-link" href="#"
+                    ><i class="fa-solid fa-backward-step"></i
+                  ></a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link" href="#"
+                    ><i class="fa-solid fa-chevron-left"></i
+                  ></a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">6</a></li>
+                <li class="page-item"><a class="page-link" href="#">7</a></li>
+                <li class="page-item"><a class="page-link" href="#">8</a></li>
+                <li class="page-item active">
+                  <a class="page-link" href="#">9</a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link" href="#">10</a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link" href="#"
+                    ><i class="fa-solid fa-chevron-right"></i
+                  ></a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link" href="#"
+                    ><i class="fa-solid fa-forward-step"></i
+                  ></a>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <button class="btn btn-primary">
+                <i
+                  class="fa-solid fa-book-open"
+                  style="color: rgb(256, 256, 256)"
+                ></i>
+                글 쓰기
+              </button>
+            </div>
+          </div>
+        </section>
+        <div class="fixed text-center">ⓒ 2026.03 created by fullstack</div>
       </div>
     </div>
 
+    <script>
+      const { createApp, ref } = Vue;
+
+      createApp({
+        setup() {
+          const articles = ref([
+            { title: '글 제목 1', author: 'user01', date: '2026-03-20' },
+            { title: '글 제목 2', author: 'user01', date: '2026-03-20' },
+            { title: '글 제목 3', author: 'user01', date: '2026-03-20' },
+            { title: '글 제목 4', author: 'user01', date: '2026-03-20' },
+            { title: '글 제목 5', author: 'user01', date: '2026-03-20' },
+          ]);
+          return {
+            articles,
+          };
+        },
+      }).mount('#app');
+    </script>
   </body>
 </html>
