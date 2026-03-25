@@ -13,7 +13,7 @@
 
 <script setup>
 import InputTodo from './components/InputTodo.vue';
-import TodoList from './components/ToDoList.vue';
+import TodoList from './components/TodoList.vue';
 import { ref } from 'vue';
 
 let ts = new Date().getTime();
