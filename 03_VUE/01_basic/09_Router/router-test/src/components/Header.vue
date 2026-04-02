@@ -7,7 +7,7 @@
      -->
     <RouterLink to="/">Home</RouterLink> |
     <RouterLink to="/members">members</RouterLink> |
-    <RouterLink to="/members/5">membersInfo</RouterLink>
+    <RouterLink :to="{name: 'members-nested'}">members-nested</RouterLink>
   </div>
 </template>
 

@@ -38,7 +38,6 @@
 </template>
 
 <script setup>
-// 별도 로직 없음
 </script>
 
 <style scoped>
